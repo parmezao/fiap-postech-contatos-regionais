@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContatosRegionais.Applicati
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContatosRegionais.Infra.Data", "src\ContatosRegionais.Infra.Data\ContatosRegionais.Infra.Data.csproj", "{5F97B724-7F51-44F5-AC99-194970097378}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContatosRegionais.Service", "src\ContatosRegionais.Service\ContatosRegionais.Service.csproj", "{F9F7EDFF-CF5C-459B-A078-FD93EBC4979B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5F97B724-7F51-44F5-AC99-194970097378}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F97B724-7F51-44F5-AC99-194970097378}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F97B724-7F51-44F5-AC99-194970097378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9F7EDFF-CF5C-459B-A078-FD93EBC4979B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9F7EDFF-CF5C-459B-A078-FD93EBC4979B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9F7EDFF-CF5C-459B-A078-FD93EBC4979B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9F7EDFF-CF5C-459B-A078-FD93EBC4979B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
