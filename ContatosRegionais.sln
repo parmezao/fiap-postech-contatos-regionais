@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContatosRegionais.Domain", "src\ContatosRegionais.Domain\ContatosRegionais.Domain.csproj", "{81FBB524-0991-45B9-A87C-906188436D2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContatosRegionais.Domain.Tests", "tests\ContatosRegionais.Domain.Tests\ContatosRegionais.Domain.Tests.csproj", "{81801FB1-5A29-FF02-1431-BEEBE97F6B06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{81FBB524-0991-45B9-A87C-906188436D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81FBB524-0991-45B9-A87C-906188436D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81FBB524-0991-45B9-A87C-906188436D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81801FB1-5A29-FF02-1431-BEEBE97F6B06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81801FB1-5A29-FF02-1431-BEEBE97F6B06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81801FB1-5A29-FF02-1431-BEEBE97F6B06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81801FB1-5A29-FF02-1431-BEEBE97F6B06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
