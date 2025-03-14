@@ -2,7 +2,7 @@ using ContatosRegionais.Domain.ValueObjects;
 
 namespace ContatosRegionais.Domain.Entities;
 
-public class Contato
+public class Contato : BaseEntity
 {
     public string? Nome { get; set; }
 
