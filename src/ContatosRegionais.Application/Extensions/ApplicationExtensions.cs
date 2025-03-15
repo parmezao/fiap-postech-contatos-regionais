@@ -12,10 +12,13 @@ public static class ApplicationExtensions
 {
     public static IApplicationBuilder ApplyMigrations(this WebApplication app)
     {
+        Console.WriteLine("Iniciando Migrations...");
+
         using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
         var context = serviceScope.ServiceProvider.GetService<SqlServerDbContext>();
         context!.Database.Migrate();
 
+        Console.WriteLine("Migrations finalizada!");
         return app;
     }
 
