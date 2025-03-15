@@ -4,16 +4,23 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	<NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
 		<PackageReference Include="MassTransit" Version="8.3.3" />
+		<PackageReference Include="prometheus-net.AspNetCore" Version="8.2.1" />
+		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ContatosRegionais.Domain\ContatosRegionais.Domain.csproj" />
+	  <ProjectReference Include="..\ContatosRegionais.Infra.Data\ContatosRegionais.Infra.Data.csproj" />
+	  <ProjectReference Include="..\ContatosRegionais.Service\ContatosRegionais.Service.csproj" />
 	</ItemGroup>
 
 </Project>
