@@ -11,12 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContatosRegionais.Application.Extensions;
 
@@ -33,12 +31,6 @@ public static class ServicesExtensions
 
         return services;
     }
-
-    //public static IServiceCollection AddMapping(this IServiceCollection services)
-    //{
-    //    services.AddAutoMapper(typeof(Program));
-    //    return services;
-    //}
 
     public static IServiceCollection AddDbConnection(this IServiceCollection services, WebApplicationBuilder builder)
     {

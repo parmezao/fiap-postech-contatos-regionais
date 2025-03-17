@@ -1,0 +1,6 @@
+@ContatosRegionais.ApiMessaging_HostAddress = http://localhost:5032
+
+GET {{ContatosRegionais.ApiMessaging_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
