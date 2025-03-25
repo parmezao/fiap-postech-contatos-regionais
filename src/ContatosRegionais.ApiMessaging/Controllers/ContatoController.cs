@@ -101,6 +101,75 @@ public class ContatoController(
     }
 
     /// <summary>
+    /// Endpoint utilizado para localizar o Contato de acordo com o Id informado
+    /// </summary>
+    /// <param name="id">Id do objeto Contato. Necessário informar para localizar o Contato</param>
+    /// <returns>Retorna o objeto do tipo Contato</returns>
+    /// <response code="200">Contato encontrado com sucesso</response>
+    /// <response code="404">Contato não encontrado</response>
+    [HttpGet("{id:int}")]
+    [Authorize]
+    [ProducesResponseType<ContatoDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ContatoDto>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ContatoDto>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ResponseModel>> GetById(int id)
+    {
+        var responseModel = new ResponseModel();
+
+        try
+        {
+            var contato = await _baseService.GetByIdAsync(id);
+            if (contato is null)
+                return NotFound(responseModel.Result(StatusCodes.Status404NotFound, "Não Encontrado", default!));
+
+            var contatoDto = _mapper.Map<ContatoDto>(contato);
+            return Ok(responseModel.Result(StatusCodes.Status200OK, "OK", contatoDto));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, responseModel.Result(
+                StatusCodes.Status500InternalServerError, "Erro Interno do Servidor", default!));
+        }
+    }   
+
+    /// <summary>
+    /// Endpoint utilizado para filtrar os Contatos de acordo com o DDD informado
+    /// </summary>
+    /// <param name="ddd">DDD do objeto Contato. Necessário informar para localizar o Contato</param>
+    /// <param name="paginationParameters">Parâmetros utilizados na paginação dos resultados</param>
+    /// <returns>Retorna o objeto do tipo Contato</returns>
+    [HttpGet, Route("ddd/{ddd:int}")]
+    [Authorize]
+    [ProducesResponseType<List<ContatoDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<ContatoDto>>(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ResponseModel>> GetByDdd(int ddd,
+        [FromQuery] PaginationParameters paginationParameters)
+    {
+        var responseModel = new ResponseModel();
+        try
+        {
+            var contatosDdd = await _baseService.FilterAsync(c => c.DDD == ddd);
+            var contatosDddDto = _mapper.Map<List<ContatoDto>>(contatosDdd);
+
+            // Paginação dos resultados
+            var pagedResult = contatosDddDto
+                .AsQueryable()
+                .ToPagedResult(paginationParameters.PageNumber, paginationParameters.PageSize);
+            Response.Headers.Append("X-Total-Count", pagedResult.TotalItems.ToString());
+            Response.Headers.Append("X-Total-Pages", pagedResult.TotalPages.ToString());
+
+            return Ok(responseModel.Result(StatusCodes.Status200OK, "OK", pagedResult));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, responseModel.Result(
+                StatusCodes.Status500InternalServerError, "Erro Interno do Servidor", default!));
+        }
+    }     
+
+    /// <summary>
     /// Endpoint utilizado para alterar um Contato existente
     /// </summary>
     /// <param name="id">Id do objeto Contato. Necessário informar para localizar o Contato que será alterado</param>

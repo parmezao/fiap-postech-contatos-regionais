@@ -30,7 +30,6 @@ public class InsertContatoConsumer(IServiceProvider serviceProvider) : IConsumer
             var baseService = scope.ServiceProvider.GetRequiredService<IBaseRepository<Contato>>();
             await baseService.InsertAsync(contato);
 
-            //Thread.Sleep(5000);
             Console.WriteLine($"Contato inserido com sucesso: {contato.Id}");
         }
         catch (Exception ex)
