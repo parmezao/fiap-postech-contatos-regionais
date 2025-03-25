@@ -32,6 +32,8 @@ public class CpuMetricsCollector : BackgroundService
 
             prevCpuTime = newCpuTime;
             prevTime = newTime;
+
+            Console.WriteLine("Métrica coletada...");
         }
     }
 }

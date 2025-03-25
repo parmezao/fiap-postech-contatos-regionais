@@ -1,0 +1,29 @@
+_format_version: "2.1"
+
+services:
+  - name: apigateway-kong-service
+    url: http://apiqueue:8080
+
+    routes:
+      - name: apigateway-kong-route
+        paths:
+          - /fiap
+        strip_path: true  
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 10
+              limit_by: consumer
+              policy: local
+              fault_tolerant: false  # Bloqueia caso o Kong tenha erro interno
+              hide_client_headers: false  # Exibe headers de rate limit na resposta           
+          - name: response-transformer
+            config:
+              add:
+                json:
+                  - "message: Você atingiu o limite de requisições."

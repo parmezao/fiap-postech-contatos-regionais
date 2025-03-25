@@ -8,9 +8,9 @@ public class ContatoPublisher(IPublishEndpoint publishEndpoint) : IContatoPublis
 {
     private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
 
-    public Task PublishDeleteContatoAsync(DeleteContatoEvent message)
+    public async Task PublishDeleteContatoAsync(DeleteContatoEvent message)
     {
-        throw new NotImplementedException();
+        await _publishEndpoint.Publish(message);
     }
 
     public async Task PublishInsertContatoAsync(InsertContatoEvent message)
@@ -18,8 +18,8 @@ public class ContatoPublisher(IPublishEndpoint publishEndpoint) : IContatoPublis
         await _publishEndpoint.Publish(message);
     }
 
-    public Task PublishUpdateContatoAsync(UpdateContatoEvent message)
+    public async Task PublishUpdateContatoAsync(UpdateContatoEvent message)
     {
-        throw new NotImplementedException();
+        await _publishEndpoint.Publish(message);
     }
 }

@@ -14,11 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ContatosRegionais.Infra.IoC
 {
@@ -26,11 +21,11 @@ namespace ContatosRegionais.Infra.IoC
     {
         public static void AddMessagingInjections(this IServiceCollection services, IConfiguration configuration)
         {
-            //Data
+            // Data
             services.AddDbContext<SqlServerDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            //Repo
+            // Repositories
             services.AddScoped<IBaseRepository<Contato>, BaseRepository<Contato>>();
             services.AddScoped<IBaseService<Contato>, BaseService<Contato>>();
 
@@ -39,17 +34,10 @@ namespace ContatosRegionais.Infra.IoC
             services.AddHostedService<CpuMetricsCollector>();
             services.AddHostedService<MemoryMetricsCollector>();
 
-            //services.AddScoped<IInsertContatoUseCase, InsertContactUseCase>();
-            //services.AddScoped<IDeleteContactsUseCase, DeleteContactUseCase>();
-            //services.AddScoped<IUpdateContactUseCase, UpdateContactUseCase>();
             services.AddScoped<IAuthenticationUseCase, AuthenticationUseCase>();
 
-            //services.AddScoped<IInsertContactUseCaseV2, InsertContactUseCaseV2>();
-            //services.AddScoped<IDeleteContactsUseCaseV2, DeleteContactUseCaseV2>();
-            //services.AddScoped<IUpdateContactUseCaseV2, UpdateContactUseCaseV2>();
-            //services.AddScoped<IGetContactsUseCase, GetContactsUseCase>();
             services.AddScoped<IContatoPublisher, ContatoPublisher>();
-            const string serviceName = "MyService";
+            const string serviceName = "ApiMessaging";
 
             services.AddMassTransit(x =>
             {
@@ -59,7 +47,6 @@ namespace ContatosRegionais.Infra.IoC
                     var rabbitMqUser = configuration["RabbitMQ:RABBITMQ_USER"] ?? string.Empty;
                     var rabbitMqPassword = configuration["RabbitMQ:RABBITMQ_PASSWORD"] ?? string.Empty;
 
-                    //cfg.Host(new Uri("rabbitmq://localhost:5672/"), h =>
                     cfg.Host(rabbitMqHost, h =>
                     {
                         h.Username(rabbitMqUser);
