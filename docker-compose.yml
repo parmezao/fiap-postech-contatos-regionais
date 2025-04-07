@@ -24,18 +24,49 @@ services:
       dockerfile: ./src/ContatosRegionais.ApiMessaging/Dockerfile        
     restart: always
     environment:
+      DOTNET_SKIP_TLS: 1
+      ASPNETCORE_URLS: http://+:8080
       ASPNETCORE_ENVIRONMENT: Docker
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
       RABBITMQ_USER: guest
       RABBITMQ_PASSWORD: guest
+      FUNCTION_URL: http://azure-function:80/api/GetAllContacts   # URL da Function dentro da rede Docker- 
     depends_on:
       - db
       - rabbitmq
     ports:
       - "8084:8080"
     expose:
-      - "8080"  # Porta interna (para comunicação dentro da rede Docker)  
+      - "8080"  # Porta interna (para comunicação dentro da rede Docker)        
+    networks:
+      - default
+      - function-net
+ 
+  azure-function:
+    image: azure-function:latest
+    build:
+      context: .
+      dockerfile: ./src/ContatosRegionais.ContatosFunction/Dockerfile
+    depends_on:
+      - apiqueue
+    ports:
+      - "7071:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/GetAllContacts"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s 
+    environment:
+      DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER: 0
+      API_URL: http://apiqueue:8080/api/messaging/contato   # URL da Web API dentro da rede Docker
+      TOKEN_URL: http://apiqueue:8080/api/messaging/token  
+      AzureWebJobsStorage: UseDevelopmentStorage=true
+      FUNCTIONS_WORKER_RUNTIME: dotnet
+    networks:
+      - default
+      - function-net
 
   rabbitmq-consumer:
     container_name: rabbitmq-consumer
@@ -200,3 +231,5 @@ networks:
   default:
     driver: bridge
     name: tech_challenge
+  function-net:
+    driver: bridge  

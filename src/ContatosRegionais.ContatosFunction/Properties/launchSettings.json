@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "ContatosRegionais.ContatosFunction": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7064"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 30438,
+      "useSSL": false
+    }
+  }
+}

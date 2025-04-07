@@ -7,6 +7,9 @@ using ContatosRegionais.Domain.Entities;
 using ContatosRegionais.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ContatosRegionais.ApiMessaging.Controllers;
 
@@ -85,7 +88,7 @@ public class ContatoController(
             var contatosDto = _mapper.Map<List<ContatoDto>>(contatos);
 
             // Paginação dos resultados
-            var pagedResult = contatosDto.AsQueryable()
+            var pagedResult = contatosDto!.AsQueryable()
                 .ToPagedResult(paginationParameters.PageNumber, paginationParameters.PageSize);
             Response.Headers.Append("X-Total-Count", pagedResult.TotalItems.ToString());
             Response.Headers.Append("X-Total-Pages", pagedResult.TotalPages.ToString());
@@ -204,10 +207,10 @@ public class ContatoController(
             await contatoPublisher.PublishUpdateContatoAsync(new UpdateContatoEvent(            
                 contatoExistente.Id,
                 contatoExistente.Nome!,    
-                contatoExistente.Email.Endereco,
                 contatoExistente.Telefone!,
+                contatoExistente.Email.Endereco,
                 contatoExistente.DDD
-            ));            
+            ));
 
             return new ResponseModel
             {
@@ -220,7 +223,7 @@ public class ContatoController(
                     contatoExistente.Telefone,
                     contatoExistente.DDD
                 }
-            };            
+            };
         }
         catch (Exception e)
         {
@@ -269,6 +272,80 @@ public class ContatoController(
             return StatusCode(500, responseModel.Result(
                 StatusCodes.Status500InternalServerError, "Erro Interno do Servidor", default!));
         }
-    }    
+    }
 
+    /// <summary>
+    /// Endpoint utilizado para listar todos os Contatos cadastrados, através da Azure Function
+    /// </summary>
+    /// <returns>Retorna a lista de objetos do tipo ContatoDto</returns>
+    [HttpGet, Route("function")]
+    public async Task<ActionResult<ResponseModel>> GetAllContacts(
+        [FromQuery] PaginationParameters paginationParameters)
+    {
+        var responseModel = new ResponseModel();
+
+        try
+        {
+            string functionUrl = Environment.GetEnvironmentVariable("FUNCTION_URL")?? string.Empty;
+            var functionResult = await CallHttpFunction<ResponseModel>(functionUrl, HttpMethod.Get);
+
+            var contatosDto = JsonConvert.DeserializeObject<List<ContatoDto>>(JsonConvert.SerializeObject(functionResult.Data));
+
+            // Paginação dos resultados
+            var pagedResult = contatosDto!
+                .AsQueryable()
+                .ToPagedResult(paginationParameters.PageNumber, paginationParameters.PageSize);
+            Response.Headers.Append("X-Total-Count", pagedResult.TotalItems.ToString());
+            Response.Headers.Append("X-Total-Pages", pagedResult.TotalPages.ToString());
+
+            return Ok(responseModel.Result(StatusCodes.Status200OK, "OK", pagedResult));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e.Message);
+            return StatusCode(500, responseModel.Result(
+                StatusCodes.Status500InternalServerError, "Erro Interno do Servidor", default!));
+        }
+    }
+
+    private static async Task<TResponse> CallHttpFunction<TResponse>(string functionUrl, HttpMethod method, object? requestBody = null)
+    {
+        try
+        {
+            HttpRequestMessage request = new(method, functionUrl);
+
+            if (requestBody != null)
+            {
+                string jsonBody = JsonConvert.SerializeObject(requestBody);
+                request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+            }
+
+            var _httpClient = new HttpClient();
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode(); // Lança uma exceção para códigos de status de erro
+            string responseContent = await response.Content.ReadAsStringAsync();
+
+            if (typeof(TResponse) == typeof(string))
+            {
+                return (TResponse)(object)responseContent;
+            }
+            else if (!string.IsNullOrEmpty(responseContent))
+            {
+                return JsonConvert.DeserializeObject<TResponse>(responseContent)!;
+            }
+            else
+            {
+                return default!;
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new HttpRequestException($"Erro na requisição HTTP: {ex.Message}");
+        }
+        catch (JsonException ex)
+        {
+            throw new JsonException($"Erro na requisição HTTP: {ex.Message}");
+        }
+    }
 }
