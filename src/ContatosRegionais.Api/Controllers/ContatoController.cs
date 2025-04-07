@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ContatosRegionais.Application.DTO;
+using ContatosRegionais.Application.Extensions;
 using ContatosRegionais.Application.Validations;
 using ContatosRegionais.Application.ViewModels;
 using ContatosRegionais.Domain.Entities;
@@ -34,7 +35,7 @@ public class ContatoController(
 
         try
         {
-            var contato = _mapper.Map<Contato>(contatoDto);
+            var contato = contatoDto.ToContato();
             var result = await _baseService.AddAsync(contato);
 
             return CreatedAtAction(nameof(GetById), new { id = result.Id },
@@ -64,7 +65,7 @@ public class ContatoController(
         try
         {
             var contatos = await _baseService.GetAllAsync();
-            var contatosDto = _mapper.Map<List<ContatoDto>>(contatos);
+            var contatosDto = contatos.ToDto();
 
             // Paginação dos resultados
             var pagedResult = contatosDto.AsQueryable()
@@ -104,7 +105,7 @@ public class ContatoController(
             if (contato is null)
                 return NotFound(responseModel.Result(StatusCodes.Status404NotFound, "Não Encontrado", default!));
 
-            var contatoDto = _mapper.Map<ContatoDto>(contato);
+            var contatoDto = contato.ToDto();
             return Ok(responseModel.Result(StatusCodes.Status200OK, "OK", contatoDto));
         }
         catch (Exception e)
@@ -132,7 +133,7 @@ public class ContatoController(
         try
         {
             var contatosDdd = await _baseService.FilterAsync(c => c.DDD == ddd);
-            var contatosDddDto = _mapper.Map<List<ContatoDto>>(contatosDdd);
+            var contatosDddDto = contatosDdd.ToDto();
 
             // Paginação dos resultados
             var pagedResult = contatosDddDto
