@@ -1,6 +1,5 @@
 ﻿using ContatosRegionais.Application.BackgroundServices;
 using ContatosRegionais.Application.Interfaces;
-using ContatosRegionais.Application.Mapping;
 using ContatosRegionais.Application.UseCases;
 using ContatosRegionais.Domain.Entities;
 using ContatosRegionais.Domain.Interfaces;
@@ -30,7 +29,6 @@ namespace ContatosRegionais.Infra.IoC
             services.AddScoped<IBaseService<Contato>, BaseService<Contato>>();
 
             //Services
-            services.AddAutoMapper(typeof(MappingProfile));
             services.AddHostedService<CpuMetricsCollector>();
             services.AddHostedService<MemoryMetricsCollector>();
 

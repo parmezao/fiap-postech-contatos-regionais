@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ContatosRegionais.Application.DTO;
+﻿using ContatosRegionais.Application.DTO;
 using ContatosRegionais.Application.Events;
 using ContatosRegionais.Application.Extensions;
 using ContatosRegionais.Application.Interfaces;
@@ -17,10 +16,9 @@ namespace ContatosRegionais.ApiMessaging.Controllers;
 [Route("api/messaging/[controller]")]
 [ApiController]
 public class ContatoController(
-    IBaseService<Contato> baseService, IMapper mapper, ILogger<ContatoController> logger) : ControllerBase
+    IBaseService<Contato> baseService, ILogger<ContatoController> logger) : ControllerBase
 {
     private readonly IBaseService<Contato> _baseService = baseService;
-    private readonly IMapper _mapper = mapper;
     private readonly ILogger<ContatoController> _logger = logger;
 
     /// <summary>
@@ -202,7 +200,7 @@ public class ContatoController(
             if (contatoExistente is null)
                 return NotFound(responseModel.Result(StatusCodes.Status404NotFound, "Não Encontrado", default!));
 
-            _mapper.Map(contatoDto, contatoExistente);
+            contatoExistente = contatoDto.ToContato();
 
             // Cria a mensagem e publica na fila
             await contatoPublisher.PublishUpdateContatoAsync(new UpdateContatoEvent(            

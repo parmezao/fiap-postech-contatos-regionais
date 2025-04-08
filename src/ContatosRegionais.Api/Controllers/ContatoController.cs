@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ContatosRegionais.Application.DTO;
+﻿using ContatosRegionais.Application.DTO;
 using ContatosRegionais.Application.Extensions;
 using ContatosRegionais.Application.Validations;
 using ContatosRegionais.Application.ViewModels;
@@ -13,10 +12,9 @@ namespace ContatosRegionais.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ContatoController(
-    IBaseService<Contato> baseService, IMapper mapper, ILogger<ContatoController> logger) : ControllerBase
+    IBaseService<Contato> baseService, ILogger<ContatoController> logger) : ControllerBase
 {
     private readonly IBaseService<Contato> _baseService = baseService;
-    private readonly IMapper _mapper = mapper;
     private readonly ILogger<ContatoController> _logger = logger;
 
     /// <summary>
@@ -178,7 +176,7 @@ public class ContatoController(
             if (contatoExistente is null)
                 return NotFound(responseModel.Result(StatusCodes.Status404NotFound, "Não Encontrado", default!));
 
-            _mapper.Map(contatoDto, contatoExistente);
+            contatoExistente = contatoDto.ToContato();
             await _baseService.UpdateAsync(contatoExistente);
 
             return NoContent();
