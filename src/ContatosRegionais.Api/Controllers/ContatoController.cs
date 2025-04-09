@@ -4,6 +4,7 @@ using ContatosRegionais.Application.Validations;
 using ContatosRegionais.Application.ViewModels;
 using ContatosRegionais.Domain.Entities;
 using ContatosRegionais.Domain.Interfaces;
+using ContatosRegionais.Domain.ValueObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -176,7 +177,12 @@ public class ContatoController(
             if (contatoExistente is null)
                 return NotFound(responseModel.Result(StatusCodes.Status404NotFound, "Não Encontrado", default!));
 
-            contatoExistente = contatoDto.ToContato();
+            var contato = contatoDto.ToContato();
+
+            contatoExistente.Nome = contato.Nome;
+            contatoExistente.Telefone = contato.Telefone;
+            contatoExistente.DDD = contato.DDD;
+            contatoExistente.Email = new Email(contatoDto.Email);
             await _baseService.UpdateAsync(contatoExistente);
 
             return NoContent();
